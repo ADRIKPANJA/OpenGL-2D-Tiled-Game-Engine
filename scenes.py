@@ -36,7 +36,7 @@ class UIScene(core.scene.Scene):
         v = Matrix44.identity(dtype="f4")
         p = Matrix44.orthogonal_projection(0, SCREEN_X, 0, SCREEN_Y, -1, 1, dtype="f4")
         fnt = pg.font.Font(None, 1000)
-        tmp = fnt.render("TEST", False, (1,1,1), None)
+        tmp = fnt.render("Hello World", False, (1,1,1), None)
         tmp = tmp.convert_alpha(main.SCREEN)
         tmp = pg.transform.smoothscale(tmp, (1024, 1024))
         tmp = pg.image.tostring(tmp, "RGBA", True)
