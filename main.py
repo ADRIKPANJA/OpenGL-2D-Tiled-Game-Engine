@@ -21,7 +21,7 @@ class App():
     def __init__(self):
         self.clock = pg.time.Clock()
         self.ctx = gl.create_context()
-        self.scenes = UIScene(self)
+        self.scenes = [UIScene(self)]
 
     def _tick(self):
         for evt in pg.event.get():
@@ -29,7 +29,8 @@ class App():
                 pg.quit()
                 sys.exit()
         self.ctx.clear(0,0,0)
-        self.scenes.tick()
+        for scene in self.scenes:
+            scene.tick()
         pg.display.flip()
         self.clock.tick(FPS_LIMIT)
 
