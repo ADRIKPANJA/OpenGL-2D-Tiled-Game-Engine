@@ -83,7 +83,7 @@ class TileEngineScene(core.scene.Scene):
         self.program["tileMap"] = 0
         
     def tick(self):
-        v = Matrix44.from_scale((self.app.camZoom, self.app.camZoom, 1), dtype="f4") * Matrix44.from_z_rotation(-self.app.camRot/360, dtype="f4") * Matrix44.from_translation((-self.app.camX, -self.app.camY, 0), dtype="f4")
+        v = Matrix44.from_translation((-self.app.camX, -self.app.camY, 0), dtype="f4") * Matrix44.from_z_rotation(-self.app.camRot/360, dtype="f4") * Matrix44.from_scale((self.app.camZoom, self.app.camZoom, 1), dtype="f4")
         p = Matrix44.orthogonal_projection(0, SCREEN_X, 0, SCREEN_Y, -1, 1, dtype="f4")
         self.tileMap.use(location=0)
         self.program["p"].write(p.tobytes())
