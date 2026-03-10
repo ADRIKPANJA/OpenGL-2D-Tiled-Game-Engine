@@ -10,3 +10,5 @@ A **starter OpenGL template** is included in the `backups` folder. Feel free to 
 However, please **avoid copying the main engine code**. The template is free to use, but the engine itself is still under active development.
 
 Suggestions, feedback, and contributions are always appreciated!
+
+- Tile Engine added as a recent update. Includes a fully fledged camera tile system as well.
