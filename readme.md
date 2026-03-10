@@ -12,3 +12,9 @@ However, please **avoid copying the main engine code**. The template is free to 
 Suggestions, feedback, and contributions are always appreciated!
 
 - Tile Engine added as a recent update. Includes a fully fledged camera tile system as well.
+
+- Controls: WASD to move camera
+- UP AND DOWN ARROW: Rotate camera
+- LEFT AND RIGHT ARROW: Zoom Camera
+
+- NOTE: Delta time system isnt implemented yet. Thus, do NOT put `FPS_LIMIT` too high.
