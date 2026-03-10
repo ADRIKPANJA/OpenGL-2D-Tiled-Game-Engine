@@ -25,6 +25,8 @@ class App():
         self.camX = self.camY = 0
         self.camRot = 0
         self.camZoom = 1
+        self.ctx.enable(gl.BLEND)
+        self.ctx.blend_func = gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA
 
     def _tick(self):
         for evt in pg.event.get():

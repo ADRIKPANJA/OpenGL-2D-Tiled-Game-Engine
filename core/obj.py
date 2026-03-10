@@ -25,7 +25,3 @@ class Obj():
 
     def render(self, flags=gl.TRIANGLES):
         self._vao.render(flags)
-
-    def update_vbo_and_rebind(self, updated_vbo, ctx, *vbo_struct):
-        self.vbos = updated_vbo
-        self.setup_render(ctx, *vbo_struct)
