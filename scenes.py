@@ -62,7 +62,7 @@ class UIScene(core.scene.Scene):
             obj.render()
 
 class TileEngineScene(core.scene.Scene):
-    def __init__(self, app: main.App):
+    def __init__(self, app: main.App, pics: list[pg.surface.Surface]):
         super().__init__(app, 0)
         self.app = app
         self.shader = core.shader.Shader(".\\shaders\\tile_engine.shader")
@@ -90,23 +90,37 @@ class TileEngineScene(core.scene.Scene):
             [0, 1, 0],
             [0, 0, 1]
         ], dtype="i4")
-        self.tileMap = self.app.ctx.texture((3, 9), 1, np.flipud(tileMap).tobytes(), dtype="i4")
+        self.tileMap = self.app.ctx.texture(tileMap.shape[::-1], 1, np.flipud(tileMap).tobytes(), dtype="i4")
         self.tileMap.filter = (gl.NEAREST, gl.NEAREST)
         self.tileMap.use(location=0)
         self.program["tileMap"] = 0
-        
+        self.compiledAtlas = self.app.ctx.texture_array((256, 256, len(pics)), 4)
+        # Create atlas
+        for i, pic in enumerate(pics):
+            pic = pg.transform.smoothscale(pic, (256, 256))
+            data = pg.image.tostring(pic, "RGBA", True)
+            self.compiledAtlas.write(
+                data,
+                viewport=(0, 0, i, 256, 256, 1)
+            )
+        self.compiledAtlas.use(location=1)
+        self.program["tileAtlas"] = 1
+        self.program["TILE_SIZE"] = 64.0
+
     def tick(self):
-        v =  (Matrix44.from_translation((SCREEN_X/2, SCREEN_Y/2, 0), dtype="f4") *
-              Matrix44.from_scale((self.app.camZoom, self.app.camZoom, 1), dtype="f4") * 
-              Matrix44.from_translation((-self.app.camX, -self.app.camY, 0), dtype="f4") * 
-              Matrix44.from_z_rotation(np.radians(-self.app.camRot), dtype="f4") *
-              Matrix44.from_translation((-SCREEN_X/2, -SCREEN_Y/2, 0), dtype="f4")
-             )
+        v = (
+            Matrix44.from_translation((SCREEN_X/2, SCREEN_Y/2, 0), dtype="f4") *
+            Matrix44.from_scale((self.app.camZoom, self.app.camZoom, 1), dtype="f4") *
+            Matrix44.from_z_rotation(np.radians(-self.app.camRot), dtype="f4") *
+            Matrix44.from_translation((-self.app.camX, -self.app.camY, 0), dtype="f4") *
+            Matrix44.from_translation((-SCREEN_X/2, -SCREEN_Y/2, 0), dtype="f4")
+        )
         p = Matrix44.orthogonal_projection(0, SCREEN_X, 0, SCREEN_Y, -1, 1, dtype="f4")
         self.tileMap.use(location=0)
         self.program["p"].write(p.tobytes())
         self.program["invView"].write(np.linalg.inv(v).tobytes())
         self.tileMap.use(location=0)
+        self.compiledAtlas.use(location=1)
         keys = pg.key.get_pressed()
         self.app.camX += (keys[pg.K_d] - keys[pg.K_a]) * 10
         self.app.camY += (keys[pg.K_w] - keys[pg.K_s]) * 10

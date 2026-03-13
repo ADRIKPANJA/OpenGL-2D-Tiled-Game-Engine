@@ -14,14 +14,18 @@ pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, 3)
 pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
 
 # Initialize Display
-SCREEN = pg.display.set_mode((SCREEN_X, SCREEN_Y), pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE, vsync=1)
+SCREEN = pg.display.set_mode((SCREEN_X, SCREEN_Y), pg.OPENGL | pg.DOUBLEBUF, vsync=1)
+pg.display.set_caption("Test Window")
 
 # App Class
 class App():
     def __init__(self):
         self.clock = pg.time.Clock()
         self.ctx = gl.create_context()
-        self.scenes = [TileEngineScene(self), UIScene(self)]
+        s = pg.surface.Surface((32, 32))
+        s.fill("white")
+        pics = [s.convert_alpha(), pg.image.load(".\\assets\\test_tile.png").convert_alpha()]
+        self.scenes = [TileEngineScene(self, pics), UIScene(self)]
         self.camX = self.camY = 0
         self.camRot = 0
         self.camZoom = 1

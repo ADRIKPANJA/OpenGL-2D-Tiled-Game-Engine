@@ -16,5 +16,7 @@ Suggestions, feedback, and contributions are always appreciated!
 - Controls: WASD to move camera
 - UP AND DOWN ARROW: Rotate camera
 - LEFT AND RIGHT ARROW: Zoom Camera
+- Added Tile Texturing
+- Use pip install numpy moderngl pygame pyrr
 
 - NOTE: Delta time system isnt implemented yet. Thus, do NOT put `FPS_LIMIT` too high.
