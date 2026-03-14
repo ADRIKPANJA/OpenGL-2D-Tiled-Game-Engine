@@ -6,7 +6,7 @@ import main
 import numpy as np
 import pygame.freetype as font
 import core.shader
-from SETTINGS import *
+import SETTINGS
 import pygame as pg
 from pyrr import Matrix44
 
@@ -36,7 +36,7 @@ class UIScene(core.scene.Scene):
     def tick(self):
         m = Matrix44.identity(dtype="f4")
         v = Matrix44.identity(dtype="f4")
-        p = Matrix44.orthogonal_projection(0, SCREEN_X, 0, SCREEN_Y, -1, 1, dtype="f4")
+        p = Matrix44.orthogonal_projection(0, SETTINGS.SCREEN_X, 0, SETTINGS.SCREEN_Y, -1, 1, dtype="f4")
         fnt = font.Font(None, 50)
         inte = round(self.app.clock.get_fps())
         tmp = fnt.render(f"FPS {inte}", (255,255,255))[0]
@@ -69,11 +69,11 @@ class TileEngineScene(core.scene.Scene):
         self.program = self.shader.compile(app.ctx)
         vbo = np.array([
             0, 0,
-            0, SCREEN_Y, 
-            SCREEN_X, 0, 
-            SCREEN_X, 0, 
-            SCREEN_X, SCREEN_Y, 
-            0, SCREEN_Y,
+            0, SETTINGS.SCREEN_Y, 
+            SETTINGS.SCREEN_X, 0, 
+            SETTINGS.SCREEN_X, 0, 
+            SETTINGS.SCREEN_X, SETTINGS.SCREEN_Y, 
+            0, SETTINGS.SCREEN_Y,
         ], dtype="f4")
         self.objs = [core.obj.Obj(self.program)]
         vbo = self.app.ctx.buffer(vbo.tobytes())
@@ -109,13 +109,13 @@ class TileEngineScene(core.scene.Scene):
 
     def tick(self):
         v = (
-            Matrix44.from_translation((SCREEN_X/2, SCREEN_Y/2, 0), dtype="f4") *
+            Matrix44.from_translation((SETTINGS.SCREEN_X/2, SETTINGS.SCREEN_Y/2, 0), dtype="f4") *
             Matrix44.from_scale((self.app.camZoom, self.app.camZoom, 1), dtype="f4") *
             Matrix44.from_z_rotation(np.radians(-self.app.camRot), dtype="f4") *
             Matrix44.from_translation((-self.app.camX, -self.app.camY, 0), dtype="f4") *
-            Matrix44.from_translation((-SCREEN_X/2, -SCREEN_Y/2, 0), dtype="f4")
+            Matrix44.from_translation((-SETTINGS.SCREEN_X/2, -SETTINGS.SCREEN_Y/2, 0), dtype="f4")
         )
-        p = Matrix44.orthogonal_projection(0, SCREEN_X, 0, SCREEN_Y, -1, 1, dtype="f4")
+        p = Matrix44.orthogonal_projection(0, SETTINGS.SCREEN_X, 0, SETTINGS.SCREEN_Y, -1, 1, dtype="f4")
         self.tileMap.use(location=0)
         self.program["p"].write(p.tobytes())
         self.program["invView"].write(np.linalg.inv(v).tobytes())

@@ -2,7 +2,7 @@
 import moderngl as gl
 import pygame as pg
 import sys
-from SETTINGS import *
+import SETTINGS
 from scenes import *
 
 # Initialize Pygame
@@ -14,8 +14,7 @@ pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, 3)
 pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
 
 # Initialize Display
-SCREEN = pg.display.set_mode((SCREEN_X, SCREEN_Y), pg.OPENGL | pg.DOUBLEBUF, vsync=1)
-pg.display.set_caption("Test Window")
+SCREEN = pg.display.set_mode((SETTINGS.SCREEN_X, SETTINGS.SCREEN_Y), pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE, vsync=1)
 
 # App Class
 class App():
@@ -24,8 +23,8 @@ class App():
         self.ctx = gl.create_context()
         s = pg.surface.Surface((32, 32))
         s.fill("white")
-        pics = [s.convert_alpha(), pg.image.load(".\\assets\\test_tile.png").convert_alpha()]
-        self.scenes = [TileEngineScene(self, pics), UIScene(self)]
+        self.pics = [s.convert_alpha(), pg.image.load(".\\assets\\test_tile.png").convert_alpha()]
+        self.scenes = [TileEngineScene(self, self.pics), UIScene(self)]
         self.camX = self.camY = 0
         self.camRot = 0
         self.camZoom = 1
@@ -37,13 +36,17 @@ class App():
             if evt.type == pg.QUIT:
                 pg.quit()
                 sys.exit()
+            if evt.type == pg.VIDEORESIZE:
+                SETTINGS.SCREEN_X, SETTINGS.SCREEN_Y = pg.display.get_window_size()
+                self.ctx.viewport = (0, 0, SETTINGS.SCREEN_X, SETTINGS.SCREEN_Y)
+                self.scenes = [TileEngineScene(self, self.pics), UIScene(self)]
         self.ctx.clear(0,0,0)
         if self.camZoom < 0.0001:
             self.camZoom = 0.0001
         for scene in self.scenes:
             scene.tick()
         pg.display.flip()
-        self.clock.tick(FPS_LIMIT)
+        self.clock.tick(SETTINGS.FPS_LIMIT)
 
     def run(self):
         while True:
